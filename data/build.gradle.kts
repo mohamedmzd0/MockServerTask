@@ -6,6 +6,9 @@ plugins {
     // hilt
     id ("dagger.hilt.android.plugin")
     id ("kotlin-kapt")
+
+    // parcelable
+    id ("kotlin-parcelize")
 }
 
 android {

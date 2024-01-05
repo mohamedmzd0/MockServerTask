@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.example.base.BaseActivity
 import com.example.data.entity.ProductItem
 import com.example.mockservertask.databinding.ActivityProductDetailsBinding
+import com.example.utils.img_ext.generateQrCode
 
 
 class ProductDetailsActivity : BaseActivity() {
@@ -29,6 +30,8 @@ class ProductDetailsActivity : BaseActivity() {
     private fun setupViews(item: ProductItem?) {
         rootBinding.apply {
 
+            tvTitle.text=item?.name
+            ivQRCode.generateQrCode(item?.qrCode?:"")
         }
     }
 

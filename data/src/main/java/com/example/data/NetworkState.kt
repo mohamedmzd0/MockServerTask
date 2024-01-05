@@ -7,3 +7,13 @@ sealed class NetWorkState {
     object DismissLoading : NetWorkState()
 
 }
+
+class ErrorAPI {
+    companion object {
+        const val BAD_REQUEST = "bad-request"
+        const val EMPTY_RESPONSE = "empty-response"
+        const val UN_AUTHRIZED = "un-authrized"
+        const val SERVER_ERROR = "server error"
+    }
+
+}

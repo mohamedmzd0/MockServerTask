@@ -1,4 +1,4 @@
-package com.example.mockservertask.products
+package com.example.mockservertask.ui.list
 
 import android.view.LayoutInflater
 import android.view.View

@@ -1,60 +1,73 @@
 package com.example.mockservertask.ui.list
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.base.BaseFragment
+import com.example.data.entity.ProductItem
 import com.example.mockservertask.R
+import com.example.mockservertask.databinding.FragmentProductsListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ProductsListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ProductsListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+@AndroidEntryPoint
+class ProductsListFragment : BaseFragment(R.layout.fragment_products_list) {
+    private var _binding: FragmentProductsListBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+    private val viewmodel by viewModels<ProductsViewModel>()
+
+    private val productsAdapter by lazy { ProductsAdapter() }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentProductsListBinding.bind(view)
+
+
+
+        setupRecyclerView()
+
+        handleApiResponse()
+
+
+        sendApiRequest()
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
+    private fun sendApiRequest() = viewmodel.getProducts()
+    private fun handleApiResponse() {
+        handleSharedFlow(viewmodel.productFlow, onSuccess = {
+            it as List<ProductItem>
+            productsAdapter.addData(it)
+        })
+
+    }
+
+
+    private fun setupRecyclerView() {
+        binding.rvProducts.apply {
+            setHasFixedSize(true)
+            adapter = productsAdapter
         }
+
+        productsAdapter.onItemClick = ::onItemClicked
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_products_list, container, false)
+    private fun onItemClicked(productItem: ProductItem) {
+        findNavController().navigate(
+            R.id.action_productsListFragment_to_productDetailsFragment,
+            bundleOf("productItem" to productItem)
+        )
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProductsListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProductsListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

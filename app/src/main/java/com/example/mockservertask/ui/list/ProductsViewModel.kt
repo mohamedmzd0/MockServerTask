@@ -1,4 +1,4 @@
-package com.example.mockservertask.products
+package com.example.mockservertask.ui.list
 
 import com.example.base.BaseViewModel
 import com.example.data.NetWorkState

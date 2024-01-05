@@ -15,7 +15,7 @@ private const val TAG = "BaseActivity"
 open class BaseActivity : AppCompatActivity() {
 
 
-    protected fun handleSharedFlow(
+    fun handleSharedFlow(
         productFlow: SharedFlow<NetWorkState>,
         onSuccess: (data: Any) -> Unit
     ) {

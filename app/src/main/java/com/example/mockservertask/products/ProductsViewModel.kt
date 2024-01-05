@@ -1,6 +1,5 @@
 package com.example.mockservertask.products
 
-import android.util.Log
 import com.example.base.BaseViewModel
 import com.example.data.NetWorkState
 import com.example.domain.ProductUsecase
@@ -21,18 +20,23 @@ class ProductsViewModel @Inject constructor(private val usecase: ProductUsecase)
     val productFlow get() = _productFlow.asSharedFlow()
 
 
-    private  val TAG = "ProductsViewModel"
     fun getProducts() {
         executeSharedApi(_productFlow) {
             usecase.getProducts().onStart {
-                Log.e(TAG, "getProducts: start", )
-                _productFlow.emit(NetWorkState.Loading) }
-                .onCompletion { _productFlow.emit(NetWorkState.DismissLoading)
-                    Log.e(TAG, "getProducts: compl", )}
-                .catch { _productFlow.emit(NetWorkState.Error(it))
-                    Log.e(TAG, "getProducts: error", )}
-                .collectLatest { _productFlow.emit(NetWorkState.Success(it))
-                    Log.e(TAG, "getProducts: collct $it", )}
+                _productFlow.emit(NetWorkState.Loading)
+            }
+                .onCompletion {
+                    _productFlow.emit(NetWorkState.DismissLoading)
+                }
+                .catch {
+                    _productFlow.emit(NetWorkState.Error(it))
+                    _productFlow.emit(NetWorkState.Success(usecase.getCachedProducts()))
+                }
+                .collectLatest {
+                    _productFlow.emit(NetWorkState.Success(it))
+                }
         }
     }
+
+
 }
